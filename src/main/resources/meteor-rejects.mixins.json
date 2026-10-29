@@ -28,6 +28,7 @@
     "ServerListAccessor",
     "StructureVoidBlockMixin",
     "TexturedRenderLayersMixin",
+    "TitleScreenMixin",
     "ToastManagerMixin",
     "VehicleMoveC2SPacketAccessor",
     "baritone.MineProcessMixin"
