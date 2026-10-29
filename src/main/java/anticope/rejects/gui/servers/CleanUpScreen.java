@@ -7,7 +7,6 @@ import meteordevelopment.meteorclient.gui.WindowScreen;
 import meteordevelopment.meteorclient.gui.widgets.containers.WTable;
 import meteordevelopment.meteorclient.gui.widgets.pressable.WCheckbox;
 import meteordevelopment.meteorclient.utils.render.color.Color;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.multiplayer.ServerSelectionList;
@@ -83,7 +82,7 @@ public class CleanUpScreen extends WindowScreen {
             }
 
         saveServerList();
-        minecraft.setScreen(parent);
+        minecraft.gui.setScreen(parent);
     }
 
     private boolean shouldRemove(ServerData server, Set<String> knownIPs) {

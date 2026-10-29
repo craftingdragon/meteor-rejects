@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import anticope.rejects.events.SeedChangedEvent;
 import com.seedfinding.mccore.version.MCVersion;
+import net.minecraft.SharedConstants;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.systems.System;
 import meteordevelopment.meteorclient.systems.config.Config;
@@ -36,16 +37,17 @@ public class Seeds extends System<Seeds> {
 
     public Seed getSeed() {
         if (mc.hasSingleplayerServer() && mc.getSingleplayerServer() != null) {
-            MCVersion version = MCVersion.fromString(mc.getSingleplayerServer().getServerVersion());
-            if (version == null)
-                version = MCVersion.latest();
-            return new Seed(mc.getSingleplayerServer().overworld().getSeed(), version);
+            return new Seed(mc.getSingleplayerServer().overworld().getSeed(), SharedConstants.getCurrentVersion().name());
         }
 
         return seeds.get(Utils.getWorldName());
     }
 
     public void setSeed(String seed, MCVersion version) {
+        setSeed(seed, version == null ? SharedConstants.getCurrentVersion().name() : version.name);
+    }
+
+    public void setSeed(String seed, String version) {
         if (mc.hasSingleplayerServer()) return;
 
         long numSeed = toSeed(seed);
@@ -57,14 +59,14 @@ public class Seeds extends System<Seeds> {
         if (mc.hasSingleplayerServer()) return;
 
         ServerData server = mc.getCurrentServer();
-        MCVersion ver = null;
+        String ver = null;
         if (server != null)
-            ver = MCVersion.fromString(server.version.getString());
-        if (ver == null) {
+            ver = server.version.getString();
+        if (ver == null || ver.isBlank()) {
             String targetVer = "unknown";
             if (server != null) targetVer = server.version.getString();
             sendInvalidVersionWarning(seed, targetVer);
-            ver = MCVersion.latest();
+            ver = SharedConstants.getCurrentVersion().name();
         }
         setSeed(seed, ver);
     }
@@ -97,7 +99,7 @@ public class Seeds extends System<Seeds> {
     }
 
     private static void sendInvalidVersionWarning(String seed, String targetVer) {
-        MutableComponent msg = Component.literal(String.format("Couldn't resolve minecraft version \"%s\". Using %s instead. If you wish to change the version run: ", targetVer, MCVersion.latest().name));
+        MutableComponent msg = Component.literal(String.format("Couldn't resolve minecraft version \"%s\". Using %s instead. If you wish to change the version run: ", targetVer, SharedConstants.getCurrentVersion().name()));
         String cmd = String.format("%sseed %s ", Config.get().prefix, seed);
         MutableComponent cmdText = Component.literal(cmd+"<version>");
         cmdText.setStyle(cmdText.getStyle()

@@ -10,8 +10,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -36,7 +36,7 @@ public class ObsidianFarm extends Module {
         if (mc.player == null) return;
         if (mc.level == null) return;
         if (mc.gameMode == null) return;
-        if (mc.level.dimensionType().attributes().applyModifier(EnvironmentAttributes.RESPAWN_ANCHOR_WORKS, false)) {
+        if (mc.level.dimension() == Level.NETHER) {
             allowBreakAgain = true;
             return;
         }
@@ -59,7 +59,7 @@ public class ObsidianFarm extends Module {
         if (obsidian == null) return;
 
         mc.gameMode.continueDestroyBlock(obsidian, Direction.UP);
-        mc.player.swing(InteractionHand.MAIN_HAND);
+        mc.player.swing(InteractionHand.MAIN_HAND, mc.player.getItemInHand(InteractionHand.MAIN_HAND).getAttackAnimation(), false);
 
         if (mc.player.blockPosition().below().equals(obsidian) && mc.level.getBlockState(obsidian).getBlock() != Blocks.OBSIDIAN) {
             allowBreakAgain = false;

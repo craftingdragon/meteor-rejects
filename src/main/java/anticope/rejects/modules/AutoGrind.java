@@ -65,7 +65,7 @@ public class AutoGrind extends Module {
                         e.printStackTrace();
                     }
 
-                    if (mc.screen == null) break;
+                    if (mc.gui.screen() == null) break;
 
                     InvUtils.shiftClick().slot(i);
                     InvUtils.move().fromId(2).to(i);
@@ -81,10 +81,11 @@ public class AutoGrind extends Module {
         int availEnchs = 0;
 
         for (Holder<Enchantment> enchantment : enchantments.keySet()) {
+            // grindstones cant remove curses
+            if (enchantment.is(EnchantmentTags.CURSE)) continue;
             availEnchs++;
-            if (EnchantmentHelper.hasTag(stack, EnchantmentTags.CURSE))
-                availEnchs--;
-            if (enchantmentBlacklist.get().contains(enchantment.value()))
+
+            if (enchantment.unwrapKey().map(enchantmentBlacklist.get()::contains).orElse(false))
                 return false;
         }
 

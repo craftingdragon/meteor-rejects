@@ -1,15 +1,15 @@
 package anticope.rejects.commands;
 
-import anticope.rejects.arguments.EnumArgumentType;
 import anticope.rejects.utils.seeds.Seed;
 import anticope.rejects.utils.seeds.Seeds;
+import anticope.rejects.utils.CubiomesLocator;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.seedfinding.mccore.version.MCVersion;
 import meteordevelopment.meteorclient.commands.Command;
 import meteordevelopment.meteorclient.utils.Utils;
-import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -21,7 +21,7 @@ public class SeedCommand extends Command {
     }
 
     @Override
-    public void build(LiteralArgumentBuilder<SharedSuggestionProvider> builder) {
+    public void build(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
         builder.executes(ctx -> {
             Seed seed = Seeds.get().getSeed();
             if (seed == null) throw NO_SEED.create();
@@ -54,8 +54,13 @@ public class SeedCommand extends Command {
             return SINGLE_SUCCESS;
         }));
 
-        builder.then(argument("seed", StringArgumentType.string()).then(argument("version", EnumArgumentType.enumArgument(MCVersion.latest())).executes(ctx -> {
-            Seeds.get().setSeed(StringArgumentType.getString(ctx, "seed"), EnumArgumentType.getEnum(ctx, "version", MCVersion.latest()));
+        builder.then(argument("seed", StringArgumentType.string()).then(argument("version", StringArgumentType.word()).executes(ctx -> {
+            String version = StringArgumentType.getString(ctx, "version");
+            if (!CubiomesLocator.supports(version) && MCVersion.fromString(version) == null) {
+                error("Unsupported Minecraft version: %s", version);
+                return 0;
+            }
+            Seeds.get().setSeed(StringArgumentType.getString(ctx, "seed"), version);
             return SINGLE_SUCCESS;
         })));
     }

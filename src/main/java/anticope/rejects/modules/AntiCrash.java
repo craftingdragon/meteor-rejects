@@ -43,7 +43,7 @@ public class AntiCrash extends Module {
             ) cancel(event);
         } else if (event.packet instanceof ClientboundLevelParticlesPacket packet) {
             // too many particles
-            if (packet.getCount() > 100_000) cancel(event);
+            if (packet.count() > 100_000) cancel(event);
         } else if (event.packet instanceof ClientboundPlayerPositionPacket packet) {
             Vec3 playerPos = packet.change().position();
             // out of world movement
@@ -51,8 +51,8 @@ public class AntiCrash extends Module {
                 cancel(event);
         } else if (event.packet instanceof ClientboundSetEntityMotionPacket packet) {
             // velocity
-            if (packet.getMovement().x > 30_000_000 || packet.getMovement().y > 30_000_000 || packet.getMovement().z > 30_000_000
-                    || packet.getMovement().x < -30_000_000 || packet.getMovement().y  < -30_000_000 || packet.getMovement().z < -30_000_000
+            if (packet.movement().x > 1000 || packet.movement().y > 1000 || packet.movement().z > 1000
+                    || packet.movement().x < -1000 || packet.movement().y  < -1000 || packet.movement().z < -1000
             ) cancel(event);
         }
     }

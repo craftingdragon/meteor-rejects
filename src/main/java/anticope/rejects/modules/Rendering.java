@@ -29,7 +29,7 @@ public class Rendering extends Module {
 			.defaultValue(true)
             .onChanged(onChanged -> {
                 if(this.isActive()) {
-                    mc.levelRenderer.allChanged();
+                    rebuildChunks();
                 }
             })
 			.build()
@@ -58,26 +58,31 @@ public class Rendering extends Module {
 	);
 
     private final Setting<Boolean> christmas = sgFun.add(new BoolSetting.Builder()
-			.name("chrismas")
+			.name("christmas")
 			.description("Chistmas chest anytime")
 			.defaultValue(false)
 			.build()
 	);
-    
+
     private PostChain shader = null;
-    
+
     public Rendering() {
         super(MeteorRejectsAddon.CATEGORY, "rendering", "Various Render Tweaks");
     }
 
     @Override
     public void onActivate() {
-        mc.levelRenderer.allChanged();
+        rebuildChunks();
     }
 
     @Override
     public void onDeactivate() {
-        mc.levelRenderer.allChanged();
+        rebuildChunks();
+    }
+
+    private void rebuildChunks() {
+        if (mc.level == null || mc.gameRenderer == null) return;
+        mc.levelRenderer.invalidateCompiledGeometry(mc.level, mc.options, mc.gameRenderer.mainCamera(), mc.getBlockColors());
     }
 
     public void onChanged(Shader s) {
