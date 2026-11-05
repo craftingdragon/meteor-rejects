@@ -14,7 +14,6 @@
     "EntityAccessor",
     "GameRendererMixin",
     "HandshakeC2SPacketAccessor",
-    "HeightContextMixin",
     "HeightRangePlacementModifierAccessor",
     "LivingEntityAccessor",
     "LivingEntityMixin",

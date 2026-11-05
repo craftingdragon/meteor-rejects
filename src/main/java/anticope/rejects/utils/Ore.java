@@ -17,7 +17,6 @@ import net.minecraft.data.worldgen.placement.OrePlacements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.world.level.LevelHeightAccessor;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.FeatureSorter;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -60,6 +59,8 @@ public class Ore {
             case End -> reg.get(LevelStem.END);
         };
 
+        // Use the dimension generator for its height bounds and sea level (required since 26.3).
+        var heightContext = new WorldGenerationContext(dim.generator(), Minecraft.getInstance().level);
         var biomes = dim.generator().getBiomeSource().possibleBiomes();
         var biomes1 = biomes.stream().toList();
 
@@ -69,31 +70,31 @@ public class Ore {
 
 
         Map<PlacedFeature, Ore> featureToOre = new HashMap<>();
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_COAL_LOWER, 6, coal, new Color(47, 44, 54));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_COAL_UPPER, 6, coal, new Color(47, 44, 54));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_IRON_MIDDLE, 6, iron, new Color(236, 173, 119));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_IRON_SMALL, 6, iron, new Color(236, 173, 119));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_IRON_UPPER, 6, iron, new Color(236, 173, 119));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_GOLD, 6, gold, new Color(247, 229, 30));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_GOLD_LOWER, 6, gold, new Color(247, 229, 30));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_GOLD_EXTRA, 6, gold, new Color(247, 229, 30));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_GOLD_NETHER, 7, gold, new Color(247, 229, 30));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_GOLD_DELTAS, 7, gold, new Color(247, 229, 30));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_REDSTONE, 6, redstone, new Color(245, 7, 23));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_REDSTONE_LOWER, 6, redstone, new Color(245, 7, 23));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_DIAMOND, 6, diamond, new Color(33, 244, 255));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_DIAMOND_BURIED, 6, diamond, new Color(33, 244, 255));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_DIAMOND_LARGE, 6, diamond, new Color(33, 244, 255));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_DIAMOND_MEDIUM, 6, diamond, new Color(33, 244, 255));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_LAPIS, 6, lapis, new Color(8, 26, 189));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_LAPIS_BURIED, 6, lapis, new Color(8, 26, 189));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_COPPER, 6, copper, new Color(239, 151, 0));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_COPPER_LARGE, 6, copper, new Color(239, 151, 0));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_EMERALD, 6, emerald, new Color(27, 209, 45));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_QUARTZ_NETHER, 7, quartz, new Color(205, 205, 205));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_QUARTZ_DELTAS, 7, quartz, new Color(205, 205, 205));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_ANCIENT_DEBRIS_SMALL, 7, debris, new Color(209, 27, 245));
-        registerOre(featureToOre, indexer, features, OrePlacements.ORE_ANCIENT_DEBRIS_LARGE, 7, debris, new Color(209, 27, 245));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_COAL_LOWER, 6, coal, new Color(47, 44, 54));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_COAL_UPPER, 6, coal, new Color(47, 44, 54));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_IRON_MIDDLE, 6, iron, new Color(236, 173, 119));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_IRON_SMALL, 6, iron, new Color(236, 173, 119));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_IRON_UPPER, 6, iron, new Color(236, 173, 119));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_GOLD, 6, gold, new Color(247, 229, 30));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_GOLD_LOWER, 6, gold, new Color(247, 229, 30));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_GOLD_EXTRA, 6, gold, new Color(247, 229, 30));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_GOLD_NETHER, 7, gold, new Color(247, 229, 30));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_GOLD_DELTAS, 7, gold, new Color(247, 229, 30));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_REDSTONE, 6, redstone, new Color(245, 7, 23));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_REDSTONE_LOWER, 6, redstone, new Color(245, 7, 23));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_DIAMOND, 6, diamond, new Color(33, 244, 255));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_DIAMOND_BURIED, 6, diamond, new Color(33, 244, 255));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_DIAMOND_LARGE, 6, diamond, new Color(33, 244, 255));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_DIAMOND_MEDIUM, 6, diamond, new Color(33, 244, 255));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_LAPIS, 6, lapis, new Color(8, 26, 189));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_LAPIS_BURIED, 6, lapis, new Color(8, 26, 189));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_COPPER, 6, copper, new Color(239, 151, 0));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_COPPER_LARGE, 6, copper, new Color(239, 151, 0));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_EMERALD, 6, emerald, new Color(27, 209, 45));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_QUARTZ_NETHER, 7, quartz, new Color(205, 205, 205));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_QUARTZ_DELTAS, 7, quartz, new Color(205, 205, 205));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_ANCIENT_DEBRIS_SMALL, 7, debris, new Color(209, 27, 245));
+        registerOre(featureToOre, indexer, features, heightContext, OrePlacements.ORE_ANCIENT_DEBRIS_LARGE, 7, debris, new Color(209, 27, 245));
 
 
         Map<ResourceKey<Biome>, List<Ore>> biomeOreMap = new HashMap<>();
@@ -115,6 +116,7 @@ public class Ore {
             Map<PlacedFeature, Ore> map,
             List<FeatureSorter.StepFeatureData> indexer,
             HolderLookup.RegistryLookup<PlacedFeature> oreRegistry,
+            WorldGenerationContext heightContext,
             ResourceKey<PlacedFeature> oreKey,
             int genStep,
             Setting<Boolean> active,
@@ -124,7 +126,7 @@ public class Ore {
 
         int index = indexer.get(genStep).indexMapping().applyAsInt(orePlacement);
 
-        Ore ore = new Ore(orePlacement, genStep, index, active, color);
+        Ore ore = new Ore(orePlacement, genStep, index, active, color, heightContext);
 
         map.put(orePlacement, ore);
     }
@@ -141,14 +143,12 @@ public class Ore {
     public Color color;
     public boolean scattered;
 
-    private Ore(PlacedFeature feature, int step, int index, Setting<Boolean> active, Color color) {
+    private Ore(PlacedFeature feature, int step, int index, Setting<Boolean> active, Color color, WorldGenerationContext heightContext) {
         this.step = step;
         this.index = index;
         this.active = active;
         this.color = color;
-        int bottom = Minecraft.getInstance().level.getMinY();
-        int height = Minecraft.getInstance().level.dimensionType().logicalHeight();
-        this.heightContext = new WorldGenerationContext(null, LevelHeightAccessor.create(bottom, height));
+        this.heightContext = heightContext;
 
         for (PlacementModifier modifier : feature.placement()) {
             if (modifier instanceof CountPlacement) {
